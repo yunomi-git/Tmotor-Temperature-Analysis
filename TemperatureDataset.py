@@ -21,21 +21,21 @@ class TemperatureDataset:
                 "currentTimeProfile" : self.currentScript}
    
 class Run1CurrentTimeProfile(CurrentTimeProfile):
-    def getCurrentAtTime(self, time): #sent 14
+    def getCurrentAtTime(self, time): #sent 14, meas 16.37
         if (time < 40.):
             return 16.37
         else:
             return 0
         
 class Run2CurrentTimeProfile(CurrentTimeProfile):
-    def getCurrentAtTime(self, time): #sent 10
+    def getCurrentAtTime(self, time): #sent 10, meas 13.7
         if (time < 60.):
-            return 13.7
+            return 11.7
         else:
             return 0
         
 class Run3CurrentTimeProfile(CurrentTimeProfile):
-    def getCurrentAtTime(self, time): #sent 12
+    def getCurrentAtTime(self, time): #sent 12, meas 14
         if (time < 40.):
             return 14.
         elif (time >= 40 and time < 80):

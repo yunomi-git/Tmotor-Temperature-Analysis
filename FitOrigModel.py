@@ -15,15 +15,13 @@ from pyqtgraph.Qt import QtGui, QtCore
 from TempModelPlotter import TempModelPlotter
 from TemperatureModelFromFile import TempModelFromFile
 import pyqtgraph as pg
-from TimePlotCostEvaluator import TimePlotCostEvaluator
+from TimePlotCostEvaluator import TimePlotCostEvaluator, BatchTimePlotCostEvaluator
 from GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
 from Optimizer import OptimizationEndConditions
 import time
+from TemperatureDataset import ak109Dataset
+from MotorConstants import ak109MotorConstants
 
-
-path = './data/'
-filename = 'run1Data.csv'
-filepath = path + filename
 
 def generateInitialParametersAround(parametersCenter, scale):
     initialParameters = np.random.rand(populationSize, numParameters) * scale - scale/2
@@ -39,29 +37,15 @@ def convertNamedParametersToParameters(namedParameters):
 
 # ============================================================================
 # Model
-class ExperimentalCurrentTimeProfile(CurrentTimeProfile):
-    def getCurrentAtTime(self, time):
-        if (time < 40.):
-            return 16.37
-        else:
-            return 0
+dataset = ak109Dataset
+motorConstants = ak109MotorConstants
 
-currentTimeProfile = ExperimentalCurrentTimeProfile()
-ambientTemperature = 22.8
-initialConditions = {"coilInitTemp" : ambientTemperature,
-                     "motorInitTemp" : ambientTemperature,
-                     "envInitTemp" : ambientTemperature,
-                     "currentTimeProfile" : currentTimeProfile,
-                     "coilAmbientTemperature" : 25.0,
-                     "currentAlpha" : .00393,
-                     "motorResistance" : 0.09}
-temperatureModel = TempModelOrig(initialConditions)
+temperatureModel = TempModelOrig(motorConstants)
 numParameters = temperatureModel.getNumParameters()
 
-temperatureGroundTruth = TempModelFromFile(filepath)
-dt, maxTime = temperatureGroundTruth.getDtMaxT()
-
 # Optimizer
+costEvaluator = BatchTimePlotCostEvaluator(dataset, temperatureModel)
+
 scale = 10.
 populationSize = 10
 namedParameters = {"coilThermalMass" : 85.,
@@ -90,16 +74,19 @@ optimizationEndConditions = OptimizationEndConditions(maxSteps=500,
 printEveryNSteps = 100
 
 # ============================================================================
+plotData = ak109Dataset[0]
+temperatureGroundTruth = plotData.getTemperatureModel()
+initialConditions = plotData.getInitialConditions()
+dt, maxTime = temperatureGroundTruth.getDtMaxT()
 
 def main():
     finalParameters = runOptimizer()
     temperatureModel.setParameters(finalParameters)
-    times, outputs = temperatureModel.getTemperaturePlot(dt, maxTime)
+    times, outputs = temperatureModel.getTemperaturePlot(initialConditions, dt, maxTime)
     times, groundOutputs = temperatureGroundTruth.getTemperaturePlot()
     plot(times, groundOutputs, outputs)
 
 def runOptimizer():    
-    costEvaluator = TimePlotCostEvaluator(temperatureGroundTruth, temperatureModel)
     optimizer = SimpleGAOptimizer(initialParameters, costEvaluator, optimizationParameters)
     optimizer.printEveryNSteps = printEveryNSteps
     optimizer.setOptimizationEndConditions(optimizationEndConditions)

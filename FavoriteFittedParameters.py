@@ -26,7 +26,7 @@ class AK109BetaParameters(SavedParameters):
                    }
     
     def getVectorParameters(self):
-        return [8.00757115e+01, 3.12048115e+02, 3.77217667e+00, 9.90026858e-01, 1.38781825e-01]
+        return [9.24772914e+01, 3.09212708e+02, 4.09040187e+00, 1.98007910e+00, 1.70042713e-01]
     
 class AK109AlphaParameters(SavedParameters):
     def getNamedParameters(self):
@@ -38,7 +38,7 @@ class AK109AlphaParameters(SavedParameters):
                    }
     
     def getVectorParameters(self):
-        return [5.34969505e+01, 2.27947001e+02, 2.35468820e+00, 2.27722436e-01]
+        return [ 50.26554252, 204.84313289,   1.95460431,   0.77873133]
     
 class AK109OrigParameters(SavedParameters):
     def getNamedParameters(self):
@@ -48,7 +48,7 @@ class AK109OrigParameters(SavedParameters):
                    }
     
     def getVectorParameters(self):
-        return [76.30648511, 1.0942789]
+        return [69.89597228,  1.13078779]
     
 AK109FittedParameters = {"orig" : AK109OrigParameters(),
                          "alpha" : AK109AlphaParameters(),
