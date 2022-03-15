@@ -17,19 +17,20 @@ from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QSizePolicy, QSli
 class Slider(QWidget):
     def __init__(self, minimum, maximum, parent=None):
         super(Slider, self).__init__(parent=parent)
+        self.slider = QSlider(self)
+        self.slider.setOrientation(Qt.Horizontal)
+        self.slider.setTickInterval(1.0)
         
         self.verticalLayout = QVBoxLayout(self)
         self.horizontalLayout = QHBoxLayout()
         self.label = QLabel(self)
-        self.horizontalLayout.addWidget(self.label)
+        self.horizontalLayout.addWidget(self.slider)
         
         # spacerItem = QSpacerItem(0, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         # self.horizontalLayout.addItem(spacerItem)
         
-        self.slider = QSlider(self)
-        self.slider.setOrientation(Qt.Horizontal)
-        self.slider.setTickInterval(1.0)
-        self.horizontalLayout.addWidget(self.slider)
+
+        self.horizontalLayout.addWidget(self.label)
         spacerItem1 = QSpacerItem(0, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout)

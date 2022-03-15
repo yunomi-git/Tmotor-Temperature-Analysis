@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 from scipy.special import softmax
 import random
 from DebugMessage import DebugMessage
+import math
 
 
 class GeneticAlgorithmOptimizer(Optimizer):
@@ -96,7 +97,9 @@ class SimpleGAOptimizer(GeneticAlgorithmOptimizer):
             child = self.generateMutations(child, mutationScale)
             
             children = np.append(children, np.array([child]), axis=0)
-        
+# hack
+        # np.putmask(children, children<0, 0)    
+
         return children
     
     def getMutationScaling(self, population, costsList, avgParentCost):
@@ -113,11 +116,13 @@ class SimpleGAOptimizer(GeneticAlgorithmOptimizer):
     
     def getWeightedChoiceList(self, population, costsList):
         # cap the costs list
+        premaskCosts = costsList
         minCost = min(costsList)
-        for i in range(len(costsList)):
-            value = costsList[i]
-            if value > self.populationSize * minCost:
-                costsList[i] = self.populationSize * minCost
+        costsList = np.array(costsList)
+        valueIsTooLarge = np.logical_or(np.isnan(costsList), costsList > self.populationSize * minCost)
+        np.putmask(costsList, 
+                   valueIsTooLarge, 
+                   self.populationSize * minCost)
         
         # lower cost = higher chance
         invertedCosts = -np.array(costsList) 
@@ -125,23 +130,26 @@ class SimpleGAOptimizer(GeneticAlgorithmOptimizer):
         # shift to positive and normalize
         invertedCosts -= min(invertedCosts)
         invertedCosts = np.power(invertedCosts, 2)
+        np.putmask(invertedCosts, np.isnan(invertedCosts), minCost/10.)
+        
         normedCostWeights = invertedCosts / sum(invertedCosts)
         
         diversityList = SimpleGAOptimizer.getDiversityListOfPopulation(population)
         normedDiversity = diversityList / np.sum(diversityList)
-        
+                
         weights = (normedCostWeights * (1.0-self.GAParameters.diversityChoiceRatio)
                    + normedDiversity * self.GAParameters.diversityChoiceRatio) 
         
         array_sum = np.sum(weights)
         array_has_nan = np.isnan(array_sum)
         if (array_has_nan):
+            print(premaskCosts)
             print(costsList)
             print(invertedCosts)
-            print(weights)
-            print(diversityList)
             print(normedCostWeights)
-        
+            print(diversityList)
+            print(weights)
+                        
         return weights
     
     def getVarianceOfPopulation(population):
@@ -164,6 +172,7 @@ class SimpleGAOptimizer(GeneticAlgorithmOptimizer):
         
         errorNormMat = np.linalg.norm(errorTens, axis=axisDim) #norm squishes along dimension axis
         errorAvgList = np.sum(errorNormMat, axis=axisData) / (populationSize - 1) # combines along data axis
+
         return errorAvgList
 
         

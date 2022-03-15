@@ -37,7 +37,7 @@ def convertNamedParametersToParameters(namedParameters):
 
 # ============================================================================
 # Model
-dataset = ak109Dataset
+dataset = [ak109Dataset[3]]
 motorConstants = ak109MotorConstants
 
 temperatureModel = TempModelOrig(motorConstants)

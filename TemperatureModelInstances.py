@@ -49,7 +49,7 @@ class TempModelAlpha(TemperatureModel):
     def setInitialConditions(self, initialConditions):
         self.coilHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
         self.motorBulkHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
-        self.environmentHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
+        self.environmentHeatItem.setInitialTemperature(initialConditions["ambientTemperature"])
         self.environmentHeatItem.setThermalMass(1000000.)
             
         self.currentScript.setCurrentProvider(initialConditions["currentTimeProfile"])
@@ -98,7 +98,7 @@ class TempModelOrig(TemperatureModel):
     
     def setInitialConditions(self, initialConditions):
         self.coilHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
-        self.environmentHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
+        self.environmentHeatItem.setInitialTemperature(initialConditions["ambientTemperature"])
         self.environmentHeatItem.setThermalMass(1000000.)
         
         self.currentScript.setCurrentProvider(initialConditions["currentTimeProfile"])
@@ -149,7 +149,7 @@ class TempModelBeta(TemperatureModel):
     def setInitialConditions(self, initialConditions):
         self.coilHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
         self.motorBulkHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
-        self.environmentHeatItem.setInitialTemperature(initialConditions["initialTemperature"])
+        self.environmentHeatItem.setInitialTemperature(initialConditions["ambientTemperature"])
         self.environmentHeatItem.setThermalMass(1000000.)
             
         self.currentScript.setCurrentProvider(initialConditions["currentTimeProfile"])
