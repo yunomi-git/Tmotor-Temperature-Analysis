@@ -34,6 +34,7 @@ dt, maxTime = temperatureGroundTruth.getDtMaxT()
 times, outputsGround = temperatureGroundTruth.getTemperaturePlot()
 
 parametersAlpha = allFittedMotorParameters.getParametersForMotorModelFit(motorName, modelName, fitName)
+# parametersAlpha += np.random.rand(4) * 3
 temperatureModelAlpha = TempModelAlpha(motorConstants)
 temperatureModelAlpha.setParameters(parametersAlpha)
 timesAlpha, outputsAlpha = temperatureModelAlpha.getTemperaturePlot(initialConditions, dt, maxTime)
