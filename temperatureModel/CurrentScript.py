@@ -6,9 +6,9 @@ Created on Wed Mar  2 10:55:19 2022
 """
 
 from abc import abstractmethod, ABC
-from HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
-from HeatingItem import HeatingItem
-from TemperatureModel import TemperatureModel
+from temperatureModel.HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
+from temperatureModel.HeatingItem import HeatingItem
+from temperatureModel.TemperatureModel import TemperatureModel
     
 class CurrentTimeProfile(ABC):
     @abstractmethod

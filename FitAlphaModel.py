@@ -5,25 +5,17 @@ Created on Wed Mar  2 15:49:19 2022
 @author: eyu
 """
 
-from HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
-from HeatingItem import HeatingItem
-from TemperatureModel import TemperatureModel
-from CurrentScript import CurrentHeatingScript, CurrentTimeProfile
-from TemperatureModelInstances import TempModelAlpha, TempModelOrig
+from temperatureModel.TemperatureModelInstances import TempModelAlpha
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
-from TempModelPlotter import TempModelPlotter
-from TemperatureModelFromFile import TempModelFromFile
 import pyqtgraph as pg
-from TimePlotCostEvaluator import TimePlotCostEvaluator, BatchTimePlotCostEvaluator
-from GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
-from Optimizer import OptimizationEndConditions, GradientDescentOptimizer, GDOptimizationParameters
+from optimizer.TimePlotCostEvaluator import BatchTimePlotCostEvaluator
+from optimizer.GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
+from optimizer.Optimizer import OptimizationEndConditions, GradientDescentOptimizer, GDOptimizationParameters
 import time
-from TemperatureDataset import allDatasets
-from MotorConstants import akMotorConstants
-from FavoriteFittedParameters import allFittedMotorParameters
-
-
+from parameters.TemperatureDataset import allDatasets
+from parameters.MotorConstants import akMotorConstants
+from parameters.FavoriteFittedParameters import allFittedMotorParameters
 
 def generateInitialParametersAround(parametersCenter, scale):
     initialParameters = np.random.rand(populationSize, numParameters) * scale - scale/2
@@ -38,52 +30,52 @@ plotEveryNSteps = 2
 
 # ============================================================================
 # Model
-motorName = "AK606"
+motorName = "AK109"
 modelName = "alpha"
-dataset = [allDatasets[motorName][1]]
+dataset = allDatasets[motorName]
 motorConstants = akMotorConstants
 
 temperatureModel = TempModelAlpha(motorConstants)
 numParameters = temperatureModel.getNumParameters()
 
 # Optimizer
+useGeneticAlgorithm = True
 costEvaluator = BatchTimePlotCostEvaluator(dataset, temperatureModel)
-
 scale = 1.
 populationSize = 10
 
-seedFitName = "manual2"
+seedFitName = "fit123"
 seedParameters = allFittedMotorParameters.getParametersForMotorModelFit(motorName, modelName, seedFitName) 
-# seedParameters += np.random.rand(4) * 3
+seedParameters += np.random.rand(4) * 1
 
 initialParameters = generateInitialParametersAround(seedParameters, scale)
 
-# optimizationParameters = SimpleGAParameters(crossoverRatio=0.5, 
-#                                             mutationMagnitude=5.,
-#                                             decreaseMutationMagnitudeEveryNSteps=50,
-#                                             mutationMagnitudeLearningRate=0.9,
-#                                             mutationChance=1.0,
-#                                             decreaseMutationChanceEveryNSteps=200,
-#                                             mutationChanceLearningRate=0.9,
-#                                             mutateWithNormalDistribution=False,
-#                                             mutationLargeCostScalingFactor=5.,
-#                                             diversityChoiceRatio = 0.3,
-#                                             varianceMutationMaxMagnitude = 5.,
-#                                             weightedMutationScaling = np.array([1., 1., 0.01, 0.01]));
-  
-optimizationParameters = GDOptimizationParameters(optimizationStepSize = 2.,
-                                                    gradientStepFactor = 0.1,
-                                                    optimizationStepSizeScaling = 0.95,
-                                                    scaleEveryNSteps = 1,
-                                                    weightedScaling = np.array([1., 1., 0.1, 0.1]));  
+if (useGeneticAlgorithm):
+    optimizationParameters = SimpleGAParameters(crossoverRatio=0.5, 
+                                                mutationMagnitude=5.,
+                                                decreaseMutationMagnitudeEveryNSteps=50,
+                                                mutationMagnitudeLearningRate=0.9,
+                                                mutationChance=1.0,
+                                                decreaseMutationChanceEveryNSteps=200,
+                                                mutationChanceLearningRate=0.9,
+                                                mutateWithNormalDistribution=False,
+                                                mutationLargeCostScalingFactor=5.,
+                                                diversityChoiceRatio = 0.3,
+                                                varianceMutationMaxMagnitude = 5.,
+                                                weightedMutationScaling = np.array([1., 1., 0.01, 0.01]))
+    optimizer = SimpleGAOptimizer(initialParameters, costEvaluator, optimizationParameters)
+else:
+    optimizationParameters = GDOptimizationParameters(optimizationStepSize = 2.,
+                                                        gradientStepFactor = 0.1,
+                                                        optimizationStepSizeScaling = 0.95,
+                                                        scaleEveryNSteps = 1,
+                                                        weightedScaling = np.array([1., 1., 0.1, 0.1]))
+    optimizer = GradientDescentOptimizer(seedParameters, costEvaluator, optimizationParameters)
+
 
 optimizationEndConditions = OptimizationEndConditions(maxSteps=300,
                                                       convergenceThreshold=0.0)
-
 printEveryNSteps = 100
-
-# optimizer = SimpleGAOptimizer(initialParameters, costEvaluator, optimizationParameters)
-optimizer = GradientDescentOptimizer(seedParameters, costEvaluator, optimizationParameters)
 optimizer.printEveryNSteps = printEveryNSteps
 optimizer.setupOptimizer(optimizationEndConditions)
 
@@ -174,29 +166,23 @@ class UpdatingPlotter():
     
         
 def update():
-    global optimizer, plotter, updateLock
+    global optimizer, plotter
     if plotter.optimizerIsRunning():
-        if updateLock:
-            # updateLock = False
-            optimizer.optimizeNStepsOrUntilEndCondition(plotEveryNSteps)
-            currentParameters, currentCost = optimizer.getCurrentStateAndCost()
-            plotter.updatePlot(currentParameters, currentCost)
+        optimizer.optimizeNStepsOrUntilEndCondition(plotEveryNSteps)
+        currentParameters, currentCost = optimizer.getCurrentStateAndCost()
+        plotter.updatePlot(currentParameters, currentCost)
+        
+        if optimizer.hasReachedEndCondition():
+            print("Time elapsed: " + str(time.time() - plotter.start_time))
+
+            parameterHistory, costHistory = optimizer.getFullHistory()
+            bestCostIndex = np.argmin(costHistory)
+            finalParameters = parameterHistory[bestCostIndex, :]
+            print(finalParameters)
             
-            if optimizer.hasReachedEndCondition():
-                print("Time elapsed: " + str(time.time() - plotter.start_time))
-
-                parameterHistory, costHistory = optimizer.getFullHistory();
-                bestCostIndex = np.argmin(costHistory)
-                finalParameters = parameterHistory[bestCostIndex, :]
-                print(finalParameters)
+            plotter.endOptimizer()
                 
-                plotter.endOptimizer()
-                
-            # updateLock = True
-
-
-updateLock = True
-plotData = dataset[0]
+plotData = dataset[3]
 plotter = UpdatingPlotter(temperatureModel, plotData, optimizer)
 timer = QtCore.QTimer()
 timer.timeout.connect(update)
@@ -204,12 +190,7 @@ timer.start(50)
 
 def main():
     plotter.plotInitial(seedParameters)
-    
     runOptimizer()
-    # temperatureModel.setParameters(finalParameters)
-    # times, outputs = temperatureModel.getTemperaturePlot(initialConditions, dt, maxTime)
-    # times, groundOutputs = temperatureGroundTruth.getTemperaturePlot()
-    # plot(times, groundOutputs, outputs)
 
 def runOptimizer():    
     start_time = time.time()
@@ -224,14 +205,11 @@ def runOptimizer():
             
     print("Time elapsed: " + str(time.time() - start_time))
 
-    parameterHistory, costHistory = optimizer.getFullHistory();
+    parameterHistory, costHistory = optimizer.getFullHistory()
     bestCostIndex = np.argmin(costHistory)
     finalParameters = parameterHistory[bestCostIndex, :]
     print(finalParameters)
     return finalParameters
-
-
-        
         
 if __name__ == '__main__':
     import sys

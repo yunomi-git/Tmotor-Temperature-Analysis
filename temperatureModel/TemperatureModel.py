@@ -8,8 +8,8 @@ Created on Wed Mar  2 09:09:29 2022
 
 from abc import ABC, abstractmethod
 import numpy as np
-from HeatSource import HeatSource, HeatScript
-from HeatingItem import HeatingItem
+from temperatureModel.HeatSource import HeatSource, HeatScript
+from temperatureModel.HeatingItem import HeatingItem
 
 
 class TemperatureModel(ABC):

@@ -4,10 +4,10 @@ Created on Wed Mar  2 10:18:44 2022
 
 @author: eyu
 """
-from HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
-from HeatingItem import HeatingItem
-from TemperatureModel import TemperatureModel
-from CurrentScript import CurrentHeatingScript
+from temperatureModel.HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
+from temperatureModel.HeatingItem import HeatingItem
+from temperatureModel.TemperatureModel import TemperatureModel
+from temperatureModel.CurrentScript import CurrentHeatingScript
 import numpy as np
 
         

@@ -5,22 +5,22 @@ Created on Thu Mar  3 16:50:03 2022
 @author: eyu
 """
 
-from HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
-from HeatingItem import HeatingItem
-from TemperatureModel import TemperatureModel
-from CurrentScript import CurrentHeatingScript, CurrentTimeProfile
-from TemperatureModelInstances import TempModelAlpha, TempModelOrig, TempModelBeta
+from temperatureModel.HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
+from temperatureModel.HeatingItem import HeatingItem
+from temperatureModel.TemperatureModel import TemperatureModel
+from temperatureModel.CurrentScript import CurrentHeatingScript, CurrentTimeProfile
+from temperatureModel.TemperatureModelInstances import TempModelAlpha, TempModelOrig, TempModelBeta
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
-from TempModelPlotter import TempModelPlotter
-from TemperatureModelFromFile import TempModelFromFile
+from visualization.TempModelPlotter import TempModelPlotter
+from temperatureModel.TemperatureModelFromFile import TempModelFromFile
 import pyqtgraph as pg
-from TimePlotCostEvaluator import TimePlotCostEvaluator, BatchTimePlotCostEvaluator
-from GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
-from Optimizer import OptimizationEndConditions
+from optimizer.TimePlotCostEvaluator import TimePlotCostEvaluator, BatchTimePlotCostEvaluator
+from optimizer.GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
+from optimizer.Optimizer import OptimizationEndConditions
 import time
-from TemperatureDataset import ak109Dataset
-from MotorConstants import ak109MotorConstants
+from parameters.TemperatureDataset import ak109Dataset
+from parameters.MotorConstants import ak109MotorConstants
 
 
 

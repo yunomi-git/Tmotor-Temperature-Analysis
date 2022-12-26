@@ -11,7 +11,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.dockarea import *
-from pyqSlider import Slider
+from visualization.pyqSlider import Slider
 
 class SliderWithLines:
     def __init__(self, lines, minVal, maxVal):

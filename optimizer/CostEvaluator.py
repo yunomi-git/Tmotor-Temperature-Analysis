@@ -5,7 +5,7 @@ Created on Wed Oct  6 23:09:47 2021
 @author: Evan Yu
 """
 from abc import ABC, abstractmethod
-from DebugMessage import DebugMessage
+from visualization.DebugMessage import DebugMessage
 
 class CostEvaluator(ABC):
     def __init__(self):

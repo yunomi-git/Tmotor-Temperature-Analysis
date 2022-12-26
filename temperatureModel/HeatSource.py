@@ -4,7 +4,7 @@ Created on Wed Mar  2 09:54:40 2022
 
 @author: eyu
 """
-from HeatingItem import HeatingItem
+from temperatureModel.HeatingItem import HeatingItem
 from abc import abstractmethod, ABC
 
 

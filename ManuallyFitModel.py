@@ -5,21 +5,15 @@ Created on Wed Mar  2 11:13:06 2022
 @author: eyu
 """
 
-from HeatSource import HeatSource, HeatScript, ConductionHeatSource, RadiationSource, PowerSource
-from HeatingItem import HeatingItem
-from TemperatureModel import TemperatureModel
-from CurrentScript import CurrentHeatingScript, CurrentTimeProfile
-from TemperatureModelInstances import TempModelAlpha, TempModelOrig, TempModelBeta
+from temperatureModel.TemperatureModelInstances import TempModelAlpha, TempModelOrig, TempModelBeta
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
-from TempModelPlotter import TempModelPlotter
-from TemperatureModelFromFile import TempModelFromFile
 import pyqtgraph as pg
-from TimePlotCostEvaluator import TimePlotCostEvaluator
-from TemperatureDataset import allDatasets
-from MotorConstants import akMotorConstants
-from FavoriteFittedParameters import allFittedMotorParameters
-from pyqSlider import Slider
+from optimizer.TimePlotCostEvaluator import TimePlotCostEvaluator
+from parameters.TemperatureDataset import allDatasets
+from parameters.MotorConstants import akMotorConstants
+from parameters.FavoriteFittedParameters import allFittedMotorParameters
+from visualization.pyqSlider import Slider
 
 motorName = "AK606"
 modelName = "alpha"

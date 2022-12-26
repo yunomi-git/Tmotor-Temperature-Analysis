@@ -5,10 +5,10 @@ Created on Wed Mar  2 15:34:02 2022
 @author: eyu
 """
 
-from CostEvaluator import CostEvaluator
-from TemperatureModelFromFile import TempModelFromFile
-from TemperatureModel import TemperatureModel
-from TemperatureDataset import TemperatureDataset
+from optimizer.CostEvaluator import CostEvaluator
+from temperatureModel.TemperatureModelFromFile import TempModelFromFile
+from temperatureModel.TemperatureModel import TemperatureModel
+from parameters.TemperatureDataset import TemperatureDataset
 import numpy as np
 
 class TimePlotCostEvaluator(CostEvaluator):

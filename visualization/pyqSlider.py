@@ -19,7 +19,7 @@ class Slider(QWidget):
         super(Slider, self).__init__(parent=parent)
         self.slider = QSlider(self)
         self.slider.setOrientation(Qt.Horizontal)
-        self.slider.setTickInterval(1.0)
+        self.slider.setTickInterval(1)
         
         self.verticalLayout = QVBoxLayout(self)
         self.horizontalLayout = QHBoxLayout()

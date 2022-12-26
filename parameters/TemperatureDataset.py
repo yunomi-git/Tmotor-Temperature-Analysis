@@ -4,8 +4,8 @@ Created on Thu Mar  3 12:00:02 2022
 
 @author: eyu
 """
-from TemperatureModelFromFile import TempModelFromFile
-from CurrentScript import CurrentTimeProfile
+from temperatureModel.TemperatureModelFromFile import TempModelFromFile
+from temperatureModel.CurrentScript import CurrentTimeProfile
 
 
 class TemperatureDataset:

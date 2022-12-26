@@ -6,12 +6,12 @@ Created on Sun Nov 14 16:10:47 2021
 """
 
 import numpy as np;
-from Optimizer import Optimizer
+from optimizer.Optimizer import Optimizer
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from scipy.special import softmax
 import random
-from DebugMessage import DebugMessage
+from visualization.DebugMessage import DebugMessage
 import math
 
 
@@ -173,6 +173,9 @@ class SimpleGAOptimizer(GeneticAlgorithmOptimizer):
         errorNormMat = np.linalg.norm(errorTens, axis=axisDim) #norm squishes along dimension axis
         errorAvgList = np.sum(errorNormMat, axis=axisData) / (populationSize - 1) # combines along data axis
 
+        # if (np.isnan(np.sum(errorTens))):
+        #     print(errorTens)
+        #     print(errorNormMat)
         return errorAvgList
 
         
