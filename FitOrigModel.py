@@ -20,7 +20,7 @@ from optimizer.GeneticOptimizer import SimpleGAOptimizer, SimpleGAParameters
 from optimizer.Optimizer import OptimizationEndConditions
 import time
 from parameters.TemperatureDataset import ak109Dataset
-from parameters.MotorConstants import ak109MotorConstants
+from parameters.MotorConstants import akMotorConstants
 
 
 def generateInitialParametersAround(parametersCenter, scale):
@@ -38,8 +38,7 @@ def convertNamedParametersToParameters(namedParameters):
 # ============================================================================
 # Model
 dataset = [ak109Dataset[3]]
-motorConstants = ak109MotorConstants
-
+motorConstants = akMotorConstants
 temperatureModel = TempModelOrig(motorConstants)
 numParameters = temperatureModel.getNumParameters()
 
